@@ -20,10 +20,6 @@ app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
-
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
@@ -52,9 +48,23 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(longURL);
 });
 
+app.get('*', (req, res) => {
+  res.redirect('/urls');
+});
+
 app.post('/urls', (req, res) => {
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
   console.log(req.body);
   res.redirect(`/urls/${shortURL}`);
+});
+
+app.post('/urls/:shortURL/delete', (req, res) => {
+  const id = req.params.shortURL;
+  delete urlDatabase[id];
+  res.redirect('/urls');
+})
+
+app.listen(PORT, () => {
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
