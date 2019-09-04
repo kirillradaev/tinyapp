@@ -11,22 +11,19 @@
       </div>
     </div>
     <div>
-        <% if (username === undefined) { %>
+        <% if (!username) { %>
           <form class="form-inline justify-content-sm-center" method="POST" action="/login" >
             <input class="form-control" type="text" name="username" placeholder="username"    style="width: 200px; margin: 1em">
             <button type="submit" class="btn btn-outline-dark">Login</button>
           </form>
         <% } else { %>
-          <form class="form-inline justify-content-sm-center" method="POST" action="/login" >
-            <input class="form-control" type="text" name="username" placeholder="username" style="width: 200px; margin: 1em">
+          <form class="form-inline justify-content-sm-center align-items-baseline" method="POST" action="/logout" >
+          <p1 class="mr-3">
+            Logged in as: <%= username %>
+          </p1>
           <button type="submit" class="btn btn-outline-dark">Logout</button>
          <% } %>
     </div>
   </nav>
 </header>
 
-<% if(true){ %>
-  <h1>foo</h1>
-<% } else{ %>  
-  <h1>bar</h1>
-<% } %>
