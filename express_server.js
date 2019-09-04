@@ -17,6 +17,9 @@ function generateRandomString () {
   return Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5);
 }
 
+const users = { 
+  
+};
 
 app.get('/', (req, res) => {
   res.clearCookie('username');
@@ -84,6 +87,36 @@ app.post('/logout', (req, res) => {
   res.clearCookie('username');
   res.redirect('/urls');
 });
+
+app.get('/register', (req,res) => {
+  let username = req.cookies['username'];
+  let templateVars = { urls: urlDatabase , username};
+  res.render('urls_register', templateVars);
+});
+
+const checkEmail = function (users, email) {
+  for (let i in users) {
+    if (users[i].email === email) {
+      return users[i];
+    } else {
+      return false;
+    }
+  }
+};
+
+app.post('/register', (req, res) => {
+  let email = req.body.email;
+  if (req.body.email === '' && req.body.password === '') {
+    res.status(400).end();
+  } else if (checkEmail(users, email)) {  //if the email is found in the user db
+    res.status(400).end();
+  } else { //if the email isnt found in the user database
+  let userID = generateRandomString();
+  users[userID] = { id: userID, email: req.body.email, password: req.body.password };
+  res.cookie('user_id', userID);
+  res.redirect('/urls');
+  }
+})
 
 app.get('*', (req, res) => {
   res.redirect('/urls');
