@@ -22,7 +22,6 @@ const users = {
 };
 
 app.get('/', (req, res) => {
-  res.clearCookie('username');
   res.send('Hello!');
 });
 
@@ -35,22 +34,20 @@ app.get('/hello', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-   const username = req.cookies.username;
-   console.log(req.cookies);
-   let templateVars = { urls: urlDatabase , username};
+   const userID = req.cookies.user_id;
+   let templateVars = { urls: urlDatabase , user: users[userID]};
    res.render('urls_index', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  const username = req.cookies.username;
-  let templateVars = { urls: urlDatabase, username};
+  const userID = req.cookies.user_id;
+  let templateVars = { urls: urlDatabase, user: users[userID]};
   res.render('urls_new', templateVars);
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  let username = req.cookies.username;
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username };
-  console.log(templateVars);
+  let userID = req.cookies.user_id;
+  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[userID]};
   res.render('urls_show', templateVars);
 });
 
@@ -78,25 +75,29 @@ app.post('/urls/:id', (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
-});
-
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 });
 
 app.get('/register', (req,res) => {
-  let username = req.cookies['username'];
-  let templateVars = { urls: urlDatabase , username};
+  let userID = req.cookies['user_id'];
+  let templateVars = { urls: urlDatabase , user: users[userID]};
   res.render('urls_register', templateVars);
 });
+
+app.get('/login', (req, res) => {
+  let userID = req.cookies['user_id'];
+  let templateVars = { urls: urlDatabase , user: users[userID]};
+  res.render('urls_login', templateVars);
+})
 
 const checkEmail = function (users, email) {
   for (let i in users) {
     if (users[i].email === email) {
+      console.log("key", i);
+      console.log("users db:", users);
+      console.log("users[i]:", users[i]);
       return users[i];
     } else {
       return false;
@@ -116,7 +117,21 @@ app.post('/register', (req, res) => {
   res.cookie('user_id', userID);
   res.redirect('/urls');
   }
-})
+});
+
+app.post('/login', (req, res) => {
+  let email = req.body.email;
+  console.log(email);
+  let user = checkEmail(users, email);
+  if (!user) {
+    res.status(403).end();
+  } else if (user.password !== req.body.password) { 
+    res.status(403).end();
+  } else { 
+  res.cookie('user_id', user.id);
+  res.redirect('/urls');
+}
+});
 
 app.get('*', (req, res) => {
   res.redirect('/urls');
