@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
@@ -131,7 +132,7 @@ app.post('/urls/:id', (req, res) => {
   const userID = req.cookies.shortURl;
   const shortURL = req.params.shortURL;
   if(!userID) {
-    redirect('/login');
+    res.redirect('/login');
   } else if (!correctUser(userID, shortURL)){
     res.status(400).end();
   } else {
@@ -165,25 +166,47 @@ app.post('/register', (req, res) => {
     res.status(400).end();
   } else { //if the email isnt found in the user database
   let userID = generateRandomString();
-  users[userID] = { id: userID, email: req.body.email, password: req.body.password };
+
+  let encryptedPassword = bcrypt.hashSync(req.body.password, 10);
+
+  users[userID] = { id: userID, email: req.body.email, password: encryptedPassword };
   res.cookie('user_id', userID);
   res.redirect('/urls');
   }
 });
 
+// app.post('/login', (req, res) => {
+//   let email = req.body.email;
+//   let user = checkEmail(users, email);
+//   if (!user) {
+//     res.status(403).end();
+//   } else if (user.password !== req.body.password) { 
+//     res.status(403).end();
+//   } else { 
+//     res.cookie('user_id', user.id);
+//     res.redirect('/urls');
+// }
+// });
+
 app.post('/login', (req, res) => {
   let email = req.body.email;
-  console.log(email);
   let user = checkEmail(users, email);
   if (!user) {
     res.status(403).end();
-  } else if (user.password !== req.body.password) { 
+  } else if (!bcrypt.compareSync(req.body.password, user.password)) { 
     res.status(403).end();
   } else { 
-  res.cookie('user_id', user.id);
-  res.redirect('/urls');
+    res.cookie('user_id', user.id);
+    res.redirect('/urls');
 }
 });
+
+
+// {
+//  if(!bcrypt.compareSync(req.body.password, hasedPassword))
+// }
+
+
 
 // app.get('*', (req, res) => {
 //   res.redirect('/urls');
