@@ -8,7 +8,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 !["/urls page when not logged in"](https://github.com/kirillradaev/tinyapp/blob/master/docs/urls-page-not-logged-in.png?raw=true)
 
-###### Registration page"
+###### Registration page
 
 !["Registration page"](https://github.com/kirillradaev/tinyapp/blob/master/docs/registration-page.png?raw=true)
 
@@ -20,9 +20,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 !["Page for creating new URLs"](https://github.com/kirillradaev/tinyapp/blob/master/docs/create-page.png?raw=true)
 
-###### Page when the convertion was completed/the user wants to change an aready existing link
+###### Page when a convertion was completed/the user wants to change an aready existing link
 
-!["Page when the convertion was completed/the user wants to change an aready existing link"](https://github.com/kirillradaev/tinyapp/blob/master/docs/done:edit-page.png?raw=true)
+!["Page when a convertion was completed/the user wants to change an aready existing link"](https://github.com/kirillradaev/tinyapp/blob/master/docs/done:edit-page.png?raw=true)
 
 ###### My URLs page containing all existing URLs created by the user
 
